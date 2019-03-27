@@ -1,4 +1,5 @@
-﻿using RedisChat.Core;
+﻿using Newtonsoft.Json;
+using RedisChat.Core;
 using System;
 
 namespace RedisChat.Client
@@ -7,13 +8,22 @@ namespace RedisChat.Client
     {
         public static void Main(string[] args)
         {
+            var guid = Guid.NewGuid().ToString();
             var connection = new Connection("localhost:6379", 0);
             var subscriber = connection.Redis.GetSubscriber();
 
-            subscriber.Subscribe("chat", (channel, message) =>
+            subscriber.Subscribe("chat", (channel, json) =>
             {
-                Console.WriteLine(message);
+                var message = JsonConvert.DeserializeObject<SimpleMessage>(json);
+
+                if (message.Source != guid)
+                {
+                    Console.WriteLine($"{message.Source} typed: {message.Content}");
+                }
             });
+
+            Console.WriteLine($"Hello. Your id is: {guid}");
+            Console.WriteLine();
 
             while (true)
             {
@@ -24,7 +34,10 @@ namespace RedisChat.Client
                     break;
                 }
 
-                subscriber.Publish("chat", text);
+                var message = new SimpleMessage(guid, text);
+                var json = JsonConvert.SerializeObject(message);
+
+                subscriber.Publish("chat", json);
             }
         }
     }
