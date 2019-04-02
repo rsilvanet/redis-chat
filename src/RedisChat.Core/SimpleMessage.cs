@@ -2,13 +2,16 @@
 {
     public class SimpleMessage
     {
-        public SimpleMessage(string source, string content)
+        public SimpleMessage(string session, string username, string content)
         {
-            Source = source;
+            Session = session;
+            Username = username;
             Content = content;
         }
 
-        public string Source { get; set; }
+        public string Session { get; set; }
+
+        public string Username { get; set; }
 
         public string Content { get; set; }
     }
