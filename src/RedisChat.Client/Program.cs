@@ -34,7 +34,7 @@ namespace RedisChat.Client
             });
 
             Console.WriteLine($"Hello {_user}.");
-            Console.WriteLine($"Welcome to the {_user} channel.");
+            Console.WriteLine($"Welcome to the {_channel} channel.");
 
             while (true)
             {
